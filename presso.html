@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CZpresso - Coffee Meets Crypto</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Montserrat:wght@300;400;700;900&family=Poppins:wght@300;400;600;700&display=swap');
+        
+        :root {
+            /* Farver */
+            --coffee-dark: #3C2415;
+            --coffee-medium: #654321;
+            --coffee-light: #A67B5B;
+            --binance-yellow: #F3BA2F;
+            --espresso-cream: #FFF8E7;
+            --hot-pink: #FF1493;
+            --neon-green: #39FF14;
+            --accent-glow: 0 0 15px rgba(243, 186, 47, 0.7);
+            
+            /* Gennemsigtighed - justér disse værdier for at ændre alle billeder på én gang */
+            --hero-image-opacity: 0.8;                /* Baggrundsbillede i hero */
+            --hero-overlay-top-opacity: 0.5;          /* Overlay øverst i hero */
+            --hero-overlay-bottom-opacity: 0.7;       /* Overlay nederst i hero */
+            --about-overlay-opacity: 0.3;            /* Overlay i about-sektion */
+            --game-section-overlay-opacity: 0.1;     /* Overlay i spilsektion */
+            --slides-after-opacity: 0.8;            /* Gradient over slideshow billeder */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--coffee-dark);
+            color: var(--espresso-cream);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(243, 186, 47, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 40%, rgba(243, 186, 47, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 60% 80%, rgba(243, 186, 47, 0.1) 0%, transparent 30%);
+        }
+
+        .lightning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            background: white;
+            transition: opacity 0.1s;
+        }
+        
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: rgba(60, 36, 21, 0.95);
+            z-index: 1000;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--binance-yellow);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 2.2rem;
+            background: linear-gradient(to right, var(--binance-yellow), var(--coffee-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(243, 186, 47, 0.3);
+            margin-right: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .coffee-cup {
+            width: 40px;
+            height: 40px;
+            background-color: var(--binance-yellow);
+            border-radius: 5px 5px 20px 20px;
+            position: relative;
+            margin-right: 15px;
+            box-shadow: 0 0 15px rgba(243, 186, 47, 0.5);
+        }
+        
+        .coffee-cup:before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 18px;
+            border: 4px solid var(--binance-yellow);
+            border-radius: 0 10px 10px 0;
+            right: -18px;
+            top: 5px;
+        }
+        
+        .coffee-cup:after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 8px;
+            background-color: var(--coffee-medium);
+            border-radius: 50%;
+            bottom: 5px;
+            left: 5px;
+        }
+        
+        .top-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .ca-display {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-family: 'Montserrat', monospace;
+            font-size: 1rem;
+            color: var(--binance-yellow);
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--binance-yellow);
+            box-shadow: 0 0 10px rgba(243, 186, 47, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ca-display:hover {
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: var(--accent-glow);
+        }
+        
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--coffee-dark), var(--coffee-medium));
+        }
+        
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 0;
+            opacity: var(--hero-image-opacity); /* Brug variablen her */
+        }
+        
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom, 
+                    rgba(60, 36, 21, var(--hero-overlay-top-opacity)), 
+                    rgba(60, 36, 21, var(--hero-overlay-bottom-opacity))),
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(243, 186, 47, 0.05) 10px, rgba(243, 186, 47, 0.05) 20px);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 7vw;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: var(--binance-yellow);
+            text-shadow: 
+                0 0 20px rgba(243, 186, 47, 0.5),
+                5px 5px 0 var(--coffee-dark);
+            letter-spacing: 5px;
+            animation: hero-pulse 2s infinite;
+        }
+        
+        @keyframes hero-pulse {
+            0% { text-shadow: 0 0 20px rgba(243, 186, 47, 0.5), 5px 5px 0 var(--coffee-dark); }
+            50% { text-shadow: 0 0 30px rgba(243, 186, 47, 0.8), 5px 5px 0 var(--coffee-dark); }
+            100% { text-shadow: 0 0 20px rgba(243, 186, 47, 0.5), 5px 5px 0 var(--coffee-dark); }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: var(--espresso-cream);
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .ticker-container {
+            background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(166, 123, 91, 0.3));
+            padding: 15px 25px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            display: inline-block;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--binance-yellow);
+        }
+        
+        .ticker {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--neon-green), var(--binance-yellow));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 3px;
+            position: relative;
+        }
+        
+        .ticker::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.4) 50%, 
+                transparent 100%);
+            animation: ticker-shine 3s infinite;
+            transform: translateX(-100%);
+        }
+        
+        @keyframes ticker-shine {
+            0% { transform: translateX(-100%); }
+            20% { transform: translateX(100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: linear-gradient(to bottom, var(--binance-yellow), #e0a929);
+            color: var(--coffee-dark);
+            border: none;
+            border-radius: 12px;
+            padding: 18px 40px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px) rotateX(10deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4), 0 0 20px rgba(243, 186, 47, 0.6);
+            background: linear-gradient(to bottom, #ffca3b, var(--binance-yellow));
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+            clip-path: polygon(0 0, 100% 0, 100% 40%, 0 40%);
+        }
+        
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 300%;
+            top: -100%;
+            left: -100px;
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: rotate(35deg);
+            transition: all 0.6s ease;
+        }
+        
+        .cta-button:hover::after {
+            left: 120%;
+        }
+        
+        .section {
+            padding: 100px 20px;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            margin-bottom: 60px;
+            text-align: center;
+            color: var(--binance-yellow);
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            text-shadow: 3px 3px 0 var(--coffee-dark);
+            letter-spacing: 2px;
+        }
+        
+        .section-title:before, .section-title:after {
+            content: '☕';
+            position: absolute;
+            top: 0;
+            font-size: 2rem;
+        }
+        
+        .section-title:before {
+            left: -50px;
+        }
+        
+        .section-title:after {
+            right: -50px;
+        }
+        
+        .game-section {
+            background: linear-gradient(135deg, var(--coffee-dark), var(--coffee-medium));
+            position: relative;
+            padding: 100px 20px;
+            overflow: hidden;
+        }
+        
+        .game-section:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(243, 186, 47, var(--game-section-overlay-opacity)) 0%, transparent 30%),
+                radial-gradient(circle at 80% 60%, rgba(243, 186, 47, var(--game-section-overlay-opacity)) 0%, transparent 40%);
+            z-index: 1;
+        }
+        
+        .about {
+            background: linear-gradient(to bottom, var(--coffee-dark), var(--coffee-medium));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .about:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, rgba(60, 36, 21, var(--about-overlay-opacity)) 25%, transparent 25%) -20px 0,
+                linear-gradient(-45deg, rgba(60, 36, 21, var(--about-overlay-opacity)) 25%, transparent 25%) -20px 0,
+                linear-gradient(45deg, transparent 75%, rgba(60, 36, 21, var(--about-overlay-opacity)) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(60, 36, 21, var(--about-overlay-opacity)) 75%);
+            background-size: 40px 40px;
+        }
+        
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            background: linear-gradient(135deg, #654321 0%, #3C2415 100%);
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto 80px;
+            border: 3px solid var(--binance-yellow);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(243, 186, 47, 0.3);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 85% 85%, rgba(243, 186, 47, 0.05) 0%, transparent 30%);
+        }
+        
+        .coffee-cup-player {
+            width: 90px;
+            height: 70px;
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FFF;
+            border-radius: 10px 10px 40px 40px;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 255, 255, 0.2);
+            transition: transform 0.1s ease-out;
+        }
+        
+        .coffee-cup-player:before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 30px;
+            background-color: transparent;
+            border: 5px solid #FFF;
+            border-radius: 0 20px 20px 0;
+            right: -25px;
+            top: 12px;
+        }
+        
+        .coffee-cup-player:after {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 12px;
+            background: linear-gradient(to right, #8B4513, #654321);
+            border-radius: 50%;
+            bottom: 12px;
+            left: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) inset;
+        }
+        
+        .coffee-drop {
+            width: 25px;
+            height: 35px;
+            background: linear-gradient(to bottom, #8B4513, #654321);
+            border-radius: 0 0 15px 15px;
+            position: absolute;
+            top: -35px;
+            z-index: 5;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            animation: drop-wobble 1s infinite alternate;
+        }
+        
+        @keyframes drop-wobble {
+            0% { transform: rotate(-2deg) translateX(-1px); }
+            100% { transform: rotate(2deg) translateX(1px); }
+        }
+        
+        .coffee-drop:before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 5px;
+            width: 6px;
+            height: 6px;
+            background-color: #FFF;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: sparkle 2s infinite;
+        }
+        
+        @keyframes sparkle {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.3; }
+        }
+        
+        .game-score {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(60, 36, 21, 0.8));
+            color: var(--binance-yellow);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(243, 186, 47, 0.3);
+        }
+        
+        .coffee-steam {
+            position: absolute;
+            width: 8px;
+            height: 25px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            z-index: 11;
+            filter: blur(2px);
+            animation: steam 2s infinite;
+            opacity: 0.7;
+            transform-origin: bottom center;
+        }
+        
+        @keyframes steam {
+            0% { height: 0; top: 10px; opacity: 0; transform: rotate(-5deg); }
+            25% { transform: rotate(5deg); }
+            50% { opacity: 0.8; transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+            100% { height: 30px; top: -30px; opacity: 0; transform: rotate(0deg); }
+        }
+        
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(60, 36, 21, 0.9));
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--espresso-cream);
+            padding: 20px;
+            animation: overlay-pulse 3s infinite;
+        }
+        
+        @keyframes overlay-pulse {
+            0% { background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(60, 36, 21, 0.9)); }
+            50% { background: linear-gradient(135deg, rgba(20,10,5,0.9), rgba(80, 50, 30, 0.9)); }
+            100% { background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(60, 36, 21, 0.9)); }
+        }
+        
+        .game-overlay-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: var(--binance-yellow);
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7), 0 0 20px rgba(243, 186, 47, 0.5);
+            animation: title-glow 2s infinite alternate;
+        }
+        
+        @keyframes title-glow {
+            0% { text-shadow: 2px 2px 8px rgba(0,0,0,0.7), 0 0 20px rgba(243, 186, 47, 0.5); }
+            100% { text-shadow: 2px 2px 8px rgba(0,0,0,0.7), 0 0 30px rgba(243, 186, 47, 0.8); }
+        }
+        
+        .game-start-btn {
+            margin-top: 35px;
+            background: linear-gradient(to bottom, var(--binance-yellow), #e0a929);
+            color: var(--coffee-dark);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.5), 0 0 15px rgba(243, 186, 47, 0.5);
+        }
+        
+        .game-start-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent,
+                transparent,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent,
+                transparent,
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.3s;
+        }
+        
+        .game-start-btn:hover::after {
+            animation: button-shine 1.5s;
+        }
+        
+        @keyframes button-shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 60px;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .about-text p {
+            margin-bottom: 25px;
+        }
+        
+        .about-text strong {
+            color: var(--binance-yellow);
+            font-weight: 700;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-image-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            overflow: hidden;
+            border-radius: 50%;
+            border: 5px solid var(--binance-yellow);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(243, 186, 47, 0.5);
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(2deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(15px) rotate(-2deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .about-image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cz-face {
+            position: absolute;
+            bottom: -25px;
+            right: -25px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--hot-pink);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 20, 147, 0.5);
+            animation: spin 20s linear infinite;
+            z-index: 10;
+            overflow: hidden;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .slideshow-section {
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to bottom, var(--coffee-medium), var(--coffee-dark));
+        }
+        
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 400px;
+            overflow: hidden;
+        }
+        
+        .slideshow-track {
+            display: flex;
+            animation: slide 20s linear infinite;
+            width: fit-content;
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-1800px); /* width of 6 slides */ }
+        }
+        
+        .slideshow-slide {
+            min-width: 300px;
+            height: 400px;
+            margin: 0 15px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 3px solid var(--binance-yellow);
+            position: relative;
+            transition: all 0.4s ease;
+            background-color: var(--coffee-dark);
+        }
+        
+        .slideshow-slide:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(243, 186, 47, 0.5);
+            z-index: 10;
+        }
+        
+        .slideshow-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        
+        .slideshow-slide::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, rgba(0, 0, 0, var(--slides-after-opacity)), transparent);
+            z-index: 2;
+        }
+        
+        .ca-section {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(to bottom, var(--coffee-dark), var(--coffee-medium));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ca-section:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(243, 186, 47, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 40%, rgba(243, 186, 47, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 60% 80%, rgba(243, 186, 47, 0.1) 0%, transparent 30%);
+        }
+        
+        .ca-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--binance-yellow);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+        }
+        
+        .ca-container {
+            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(60, 36, 21, 0.7));
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            border: 2px solid var(--binance-yellow);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(243, 186, 47, 0.2);
+            overflow: hidden;
+        }
+        
+        .ca-container:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent,
+                transparent,
+                transparent,
+                rgba(243, 186, 47, 0.1),
+                transparent,
+                transparent,
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 7s infinite;
+        }
+        
+        .ca-address {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            color: var(--binance-yellow);
+            word-break: break-all;
+            text-shadow: 0 0 5px rgba(243, 186, 47, 0.5);
+            user-select: all;
+            border: 1px solid rgba(243, 186, 47, 0.3);
+        }
+        
+        .ca-copy {
+            background: linear-gradient(to bottom, var(--binance-yellow), #e0a929);
+            color: var(--coffee-dark);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .ca-copy:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 15px rgba(243, 186, 47, 0.5);
+        }
+        
+        .ca-copy::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent,
+                transparent,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent,
+                transparent,
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.3s;
+        }
+        
+        .ca-copy:hover::after {
+            animation: button-shine 1.5s;
+        }
+        
+        .social-section {
+            text-align: center;
+            padding: 80px 20px;
+            background-color: var(--coffee-dark);
+        }
+        
+        .social-btn {
+            color: var(--coffee-dark); 
+            text-decoration: none; 
+            font-size: 1.5rem; 
+            margin: 0 15px; 
+            background-color: var(--binance-yellow); 
+            padding: 10px 30px; 
+            border-radius: 8px; 
+            font-weight: bold;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        
+        .czpresso-quotes {
+            position: relative;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--coffee-medium), var(--coffee-dark));
+        }
+        
+        .quotes-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+        
+        .quote {
+            font-size: 2rem;
+            font-style: italic;
+            margin-bottom: 30px;
+            color: var(--espresso-cream);
+            line-height: 1.6;
+            position: relative;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+        }
+        
+        .quote:before, .quote:after {
+            content: '"';
+            font-family: Georgia, serif;
+            font-size: 5rem;
+            position: absolute;
+            color: var(--binance-yellow);
+            opacity: 0.3;
+        }
+        
+        .quote:before {
+            top: -30px;
+            left: -20px;
+        }
+        
+        .quote:after {
+            bottom: -60px;
+            right: -20px;
+        }
+        
+        .quote-author {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--binance-yellow);
+            font-weight: bold;
+        }
+        
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--espresso-cream);
+            border-top: 3px solid var(--binance-yellow);
+            position: relative;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        footer:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, 
+                var(--binance-yellow),
+                var(--hot-pink),
+                var(--neon-green),
+                var(--binance-yellow)
+            );
+            background-size: 300% 100%;
+            animation: rainbow 10s linear infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .quote {
+                font-size: 1.4rem;
+            }
+            
+            .ca-address {
+                font-size: 1rem;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lightning"></div>
+    
+    <div class="top-bar">
+        <div class="logo-container">
+            <div class="coffee-cup"></div>
+            <div class="logo">CZpresso</div>
+        </div>
+        <div class="top-links">
+            <div class="ca-display" id="top-ca"></div>
+        </div>
+    </div>
+    
+    <div class="hero">
+        <!-- HEADER BAGGRUNDSBILLEDE - opdateret med Discord link -->
+        <img src="https://cdn.discordapp.com/attachments/1316476189459877900/1353349577322795099/image_7.jpg?ex=67e15483&is=67e00303&hm=80272489cb3c4c514acdcc87e0417db6899a75721d4b79090b995a39649fb6cb&" alt="CZpresso Background" class="hero-background">
+        <div class="hero-content">
+            <h1 class="hero-title">CZpresso</h1>
+            <div class="ticker-container">
+                <div class="ticker">$CZPR</div>
+            </div>
+            <p class="hero-subtitle">Awakening possibilities in the blockchain space. Where the mindfulness of coffee culture meets the innovation of decentralized finance. A brew of wisdom for the crypto journey.</p>
+            
+            <!-- ÆNDR LINKS HERUNDER - Dette opdateres automatisk via JavaScript -->
+            <div class="button-container hero-links">
+                <a href="#" class="cta-button fourmeme-link">four.meme</a>
+                <a href="#" class="cta-button twitter-link">X</a>
+                <a href="#" class="cta-button dex-link">DEX</a>
+            </div>
+        </div>
+    </div>
+    
+    <section class="section game-section">
+        <div class="container">
+            <h2 class="section-title">CZPRESSO CATCHER</h2>
+            <div class="game-container" id="game-container">
+                <div id="coffee-cup" class="coffee-cup-player"></div>
+                <div id="score-display" class="game-score">Score: 0</div>
+                <div id="game-overlay" class="game-overlay">
+                    <h3 class="game-overlay-title">CZpresso Catcher</h3>
+                    <p>Use LEFT and RIGHT arrow keys to move</p>
+                    <p>Catch falling coffee drops in your cup!</p>
+                    <button id="start-game-btn" class="game-start-btn">Start Game</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section about">
+        <div class="container">
+            <h2 class="section-title">CAFFEINE MEETS CRYPTO</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>As <strong>wisdom never rests</strong>, our community is <strong>always evolving</strong>. CZpresso embodies the philosophy that in both coffee and crypto, <strong>patience and attention to detail</strong> create the finest experiences.</p>
+                    <p>Every transaction represents a <strong>moment of connection</strong> in our global community, like friends sharing thoughtful conversation over a carefully brewed cup.</p>
+                    <p>CZpresso brings together the <strong>contemplative nature</strong> of coffee culture with the <strong>innovative spirit</strong> of blockchain technology — creating a space for both reflection and forward movement.</p>
+                </div>
+                <div class="about-image">
+                    <div class="about-image-container">
+                        <!-- ABOUT BILLEDE - opdateret med Discord link -->
+                        <img src="https://cdn.discordapp.com/attachments/1316476189459877900/1353349560512024656/image_8.jpg?ex=67e1547f&is=67e002ff&hm=164f5872960606f7bc11c4d751ee33b4a309f42766452f1bd388810563e4dc3d&" alt="CZpresso Coffee Cups">
+                        <!-- CZ ANSIGT BILLEDE - opdateret med Discord link -->
+                        <img src="https://cdn.discordapp.com/attachments/1316476189459877900/1353349548361384098/image_9.jpg?ex=67e1547c&is=67e002fc&hm=e9b633e9580e94b54698a938f75ee339fe691c85e55365210be632a750d88cae&" alt="CZ Face" class="cz-face">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="coffee-particles" id="coffee-particles"></div>
+    </section>
+    
+    <section class="slideshow-section">
+        <div class="container">
+            <h2 class="section-title">CZPRESSO GALLERY</h2>
+        </div>
+        <div class="slideshow-container">
+            <div class="slideshow-track">
+                <!-- I slideshow-sektionen - opdateret med Discord links -->
+                <div class="slideshow-slide">
+                    <img src="https://cdn.discordapp.com/attachments/1316476189459877900/1353349537212665967/image_10.jpg?ex=67e15479&is=67e002f9&hm=32dfe9891edbf65d9071de8b28de3a29965403df083d2e75c4f7679f4215b49a&" alt="CZpresso Meme 1">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://cdn.discordapp.com/attachments/1316476189459877900/1353349525649227816/image_11.jpg?ex=67e15476&is=67e002f6&hm=e1db1062f169819a72b3523c48f64b1b1d3b562f5e7ecd48b4a548a11d168369&" alt="CZpresso Meme 2">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://media.discordapp.net/attachments/1316476189459877900/1353349516190814239/image_12.jpg?ex=67e15474&is=67e002f4&hm=450e8d548a544617ca320049fb97f29f4f23d1e6f0a98095a69715585dd14337&=&format=webp" alt="CZpresso Meme 3">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://media.discordapp.net/attachments/1316476189459877900/1353349129371123774/image_15.jpg?ex=67e15418&is=67e00298&hm=866c5f4fe4307a25864d92d5a72c11fb9ee5ea087f37fb216bfac40591449e2c&=&format=webp" alt="CZpresso Meme 4">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://media.discordapp.net/attachments/1316476189459877900/1353349480564654180/image_14.jpg?ex=67e1546c&is=67e002ec&hm=f38da0fa3421e9e80c589feaf319d6dac71a4993aa93e6a675527092d02b6eb5&=&format=webp" alt="CZpresso Meme 5">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://media.discordapp.net/attachments/1316476189459877900/1353349516190814239/image_12.jpg?ex=67e15474&is=67e002f4&hm=450e8d548a544617ca320049fb97f29f4f23d1e6f0a98095a69715585dd14337&=&format=webp" alt="CZpresso Meme 6">
+                </div>
+
+                <!-- Dupliceret for uendelig effekt - opdateret med Discord links -->
+                <div class="slideshow-slide">
+                    <img src="https://cdn.discordapp.com/attachments/1316476189459877900/1353349537212665967/image_10.jpg?ex=67e15479&is=67e002f9&hm=32dfe9891edbf65d9071de8b28de3a29965403df083d2e75c4f7679f4215b49a&" alt="CZpresso Meme 1">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://cdn.discordapp.com/attachments/1316476189459877900/1353349525649227816/image_11.jpg?ex=67e15476&is=67e002f6&hm=e1db1062f169819a72b3523c48f64b1b1d3b562f5e7ecd48b4a548a11d168369&" alt="CZpresso Meme 2">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://media.discordapp.net/attachments/1316476189459877900/1353349516190814239/image_12.jpg?ex=67e15474&is=67e002f4&hm=450e8d548a544617ca320049fb97f29f4f23d1e6f0a98095a69715585dd14337&=&format=webp" alt="CZpresso Meme 3">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://media.discordapp.net/attachments/1316476189459877900/1353349129371123774/image_15.jpg?ex=67e15418&is=67e00298&hm=866c5f4fe4307a25864d92d5a72c11fb9ee5ea087f37fb216bfac40591449e2c&=&format=webp" alt="CZpresso Meme 4">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://media.discordapp.net/attachments/1316476189459877900/1353349480564654180/image_14.jpg?ex=67e1546c&is=67e002ec&hm=f38da0fa3421e9e80c589feaf319d6dac71a4993aa93e6a675527092d02b6eb5&=&format=webp" alt="CZpresso Meme 5">
+                </div>
+                <div class="slideshow-slide">
+                    <img src="https://media.discordapp.net/attachments/1316476189459877900/1353349516190814239/image_12.jpg?ex=67e15474&is=67e002f4&hm=450e8d548a544617ca320049fb97f29f4f23d1e6f0a98095a69715585dd14337&=&format=webp" alt="CZpresso Meme 6">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="czpresso-quotes">
+        <div class="quotes-container">
+            <blockquote class="quote">
+                In the stillness of contemplation, like the moment before the first sip of coffee, we find the clarity to navigate the ever-changing currents of blockchain.
+            </blockquote>
+            <p class="quote-author">- The CZpresso Philosophy</p>
+        </div>
+    </div>
+    
+    <div class="ca-section">
+        <div class="container">
+            <h2 class="ca-title">Contract Address (CA)</h2>
+            <div class="ca-container">
+                <!-- KONTRAKT ADRESSE - Dette opdateres automatisk via JavaScript -->
+                <div class="ca-address"></div>
+                <button class="ca-copy" id="copy-button">COPY CA</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="social-section">
+        <!-- SOCIAL MEDIA LINK - Dette opdateres automatisk via JavaScript -->
+        <a href="#" class="social-btn">X</a>
+    </div>
+    
+    <footer>
+        <p>© 2025 CZpresso - Cultivating mindfulness in both coffee and crypto communities.</p>
+        <p>DYOR - Discover Your Own Reflections</p>
+    </footer>
+    
+    <script>
+        // ===== CENTRAL KONFIGURATION =====
+        // Ændr alle links og adresser her - de opdateres automatisk overalt på siden
+        const SITE_CONFIG = {
+            // Contract Address
+            CONTRACT_ADDRESS: "niggas",
+            CONTRACT_ADDRESS_SHORT: "niggas",
+            
+            // Links
+            FOURMEME_LINK: "four.meme",
+            TWITTER_LINK: "https://twitter.com/CZpresso",
+            DEX_LINK: "https://dexscreener.com"
+        };
+        
+        // Initialiser siden med værdierne fra konfigurationen
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sæt Contract Address
+            document.querySelector('.ca-address').textContent = SITE_CONFIG.CONTRACT_ADDRESS;
+            document.getElementById('top-ca').textContent = SITE_CONFIG.CONTRACT_ADDRESS_SHORT;
+            
+            // Sæt links i hero-sektionen
+            document.querySelectorAll('.hero-links a').forEach(link => {
+                if (link.classList.contains('fourmeme-link')) {
+                    link.href = SITE_CONFIG.FOURMEME_LINK;
+                } else if (link.classList.contains('twitter-link')) {
+                    link.href = SITE_CONFIG.TWITTER_LINK;
+                } else if (link.classList.contains('dex-link')) {
+                    link.href = SITE_CONFIG.DEX_LINK;
+                }
+            });
+            
+            // Sæt link i social-sektionen
+            document.querySelector('.social-btn').href = SITE_CONFIG.TWITTER_LINK;
+        });
+        
+        // Top CA display click handler
+        document.getElementById('top-ca').addEventListener('click', function() {
+            navigator.clipboard.writeText(SITE_CONFIG.CONTRACT_ADDRESS).then(() => {
+                this.textContent = "Copied!";
+                setTimeout(() => {
+                    this.textContent = SITE_CONFIG.CONTRACT_ADDRESS_SHORT;
+                }, 2000);
+                
+                // Lightning effect
+                const lightning = document.querySelector('.lightning');
+                lightning.style.opacity = 0.8;
+                setTimeout(() => {
+                    lightning.style.opacity = 0;
+                }, 100);
+            });
+        });
+        
+        // Copy Contract Address
+        document.getElementById('copy-button').addEventListener('click', function() {
+            navigator.clipboard.writeText(SITE_CONFIG.CONTRACT_ADDRESS).then(() => {
+                this.textContent = 'COPIED!';
+                setTimeout(() => {
+                    this.textContent = 'COPY CA';
+                }, 2000);
+                
+                // Lightning effect
+                const lightning = document.querySelector('.lightning');
+                lightning.style.opacity = 0.8;
+                setTimeout(() => {
+                    lightning.style.opacity = 0;
+                }, 100);
+            });
+        });
+        
+        // Coffee Catcher Game
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameContainer = document.getElementById('game-container');
+            if (!gameContainer) return;
+            
+            const cup = document.getElementById('coffee-cup');
+            const scoreDisplay = document.getElementById('score-display');
+            const overlay = document.getElementById('game-overlay');
+            const startButton = document.getElementById('start-game-btn');
+            
+            const gameState = {
+                gameWidth: gameContainer.offsetWidth,
+                gameHeight: gameContainer.offsetHeight,
+                cupWidth: 90,
+                cupHeight: 70,
+                cupSpeed: 8,
+                cupPosition: 0,
+                score: 0,
+                gameActive: false,
+                drops: [],
+                dropSpeed: 3,
+                dropInterval: 800,
+                dropCreator: null,
+                gameLoop: null,
+                steamCreator: null,
+                keys: {
+                    ArrowLeft: false,
+                    ArrowRight: false
+                },
+                touchStartX: 0,
+                isTouching: false
+            };
+            
+            // Initial cup position
+            gameState.cupPosition = gameState.gameWidth / 2 - gameState.cupWidth / 2;
+            updateCupPosition();
+            
+            // Set up controls
+            window.addEventListener('keydown', handleKeyDown);
+            window.addEventListener('keyup', handleKeyUp);
+            gameContainer.addEventListener('touchstart', handleTouchStart);
+            gameContainer.addEventListener('touchmove', handleTouchMove);
+            gameContainer.addEventListener('touchend', handleTouchEnd);
+            startButton.addEventListener('click', startGame);
+            window.addEventListener('resize', handleResize);
+            
+            function handleKeyDown(e) {
+                if (gameState.keys.hasOwnProperty(e.key)) {
+                    gameState.keys[e.key] = true;
+                    
+                    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                        e.preventDefault();
+                    }
+                }
+            }
+            
+            function handleKeyUp(e) {
+                if (gameState.keys.hasOwnProperty(e.key)) {
+                    gameState.keys[e.key] = false;
+                }
+            }
+            
+            function handleTouchStart(e) {
+                if (!gameState.gameActive) return;
+                
+                gameState.isTouching = true;
+                gameState.touchStartX = e.touches[0].clientX;
+            }
+            
+            function handleTouchMove(e) {
+                if (!gameState.gameActive || !gameState.isTouching) return;
+                
+                const touchX = e.touches[0].clientX;
+                const diffX = touchX - gameState.touchStartX;
+                
+                gameState.cupPosition += diffX;
+                
+                // Boundary check
+                if (gameState.cupPosition < 0) {
+                    gameState.cupPosition = 0;
+                } else if (gameState.cupPosition > gameState.gameWidth - gameState.cupWidth) {
+                    gameState.cupPosition = gameState.gameWidth - gameState.cupWidth;
+                }
+                
+                updateCupPosition();
+                gameState.touchStartX = touchX;
+            }
+            
+            function handleTouchEnd() {
+                gameState.isTouching = false;
+            }
+            
+            function handleResize() {
+                gameState.gameWidth = gameContainer.offsetWidth;
+                gameState.gameHeight = gameContainer.offsetHeight;
+                
+                if (gameState.cupPosition > gameState.gameWidth - gameState.cupWidth) {
+                    gameState.cupPosition = gameState.gameWidth - gameState.cupWidth;
+                    updateCupPosition();
+                }
+            }
+            
+            function updateCupPosition() {
+                cup.style.left = `${gameState.cupPosition}px`;
+            }
+            
+            function startGame() {
+                if (gameState.gameActive) return;
+                
+                // Hide overlay
+                overlay.style.display = 'none';
+                
+                // Reset game state
+                gameState.gameActive = true;
+                gameState.score = 0;
+                scoreDisplay.textContent = `Score: 0`;
+                gameState.dropSpeed = 3;
+                
+                // Clear any existing drops
+                for (const drop of gameState.drops) {
+                    if (drop.element && drop.element.parentNode) {
+                        drop.element.parentNode.removeChild(drop.element);
+                    }
+                }
+                gameState.drops = [];
+                
+                // Start game loops
+                gameState.gameLoop = setInterval(update, 16); // ~60fps
+                gameState.dropCreator = setInterval(createDrop, gameState.dropInterval);
+                gameState.steamCreator = setInterval(createSteam, 300);
+            }
+            
+            function createDrop() {
+                const dropElement = document.createElement('div');
+                dropElement.classList.add('coffee-drop');
+                
+                // Random position horizontally
+                const dropWidth = 25;
+                const randomX = Math.random() * (gameState.gameWidth - dropWidth);
+                
+                dropElement.style.left = `${randomX}px`;
+                gameContainer.appendChild(dropElement);
+                
+                gameState.drops.push({
+                    element: dropElement,
+                    x: randomX,
+                    y: -35,
+                    width: dropWidth,
+                    height: 35
+                });
+            }
+            
+            function createSteam() {
+                if (gameState.score > 0 && gameState.gameActive) {
+                    const steamElement = document.createElement('div');
+                    steamElement.classList.add('coffee-steam');
+                    
+                    // Position steam above the cup
+                    const steamX = gameState.cupPosition + gameState.cupWidth / 2 + (Math.random() * 20 - 10);
+                    
+                    steamElement.style.left = `${steamX}px`;
+                    steamElement.style.top = `${gameState.gameHeight - gameState.cupHeight - 10}px`;
+                    gameContainer.appendChild(steamElement);
+                    
+                    // Remove steam after animation
+                    setTimeout(() => {
+                        if (steamElement.parentNode) {
+                            steamElement.parentNode.removeChild(steamElement);
+                        }
+                    }, 2000);
+                }
+            }
+            
+            function moveCup() {
+                if (gameState.keys.ArrowLeft) {
+                    gameState.cupPosition -= gameState.cupSpeed;
+                }
+                
+                if (gameState.keys.ArrowRight) {
+                    gameState.cupPosition += gameState.cupSpeed;
+                }
+                
+                // Boundary check
+                if (gameState.cupPosition < 0) {
+                    gameState.cupPosition = 0;
+                } else if (gameState.cupPosition > gameState.gameWidth - gameState.cupWidth) {
+                    gameState.cupPosition = gameState.gameWidth - gameState.cupWidth;
+                }
+                
+                updateCupPosition();
+            }
+            
+            function update() {
+                if (!gameState.gameActive) return;
+                
+                moveCup();
+                
+                // Update drops
+                for (let i = 0; i < gameState.drops.length; i++) {
+                    const drop = gameState.drops[i];
+                    drop.y += gameState.dropSpeed;
+                    drop.element.style.top = `${drop.y}px`;
+                    
+                    // Check collision with cup
+                    if (checkCollision(drop)) {
+                        // Catch the drop
+                        if (drop.element.parentNode) {
+                            drop.element.parentNode.removeChild(drop.element);
+                        }
+                        gameState.drops.splice(i, 1);
+                        i--;
+                        
+                        // Update score
+                        gameState.score++;
+                        scoreDisplay.textContent = `Score: ${gameState.score}`;
+                        
+                        // Increase difficulty
+                        if (gameState.score % 10 === 0) {
+                            gameState.dropSpeed += 0.5;
+                            gameState.dropInterval = Math.max(300, gameState.dropInterval - 50);
+                            clearInterval(gameState.dropCreator);
+                            gameState.dropCreator = setInterval(createDrop, gameState.dropInterval);
+                        }
+                    } 
+                    // Remove drops that fall off screen
+                    else if (drop.y > gameState.gameHeight) {
+                        if (drop.element.parentNode) {
+                            drop.element.parentNode.removeChild(drop.element);
+                        }
+                        gameState.drops.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+            
+            function checkCollision(drop) {
+                return (
+                    drop.x < (gameState.cupPosition + gameState.cupWidth) &&
+                    (drop.x + drop.width) > gameState.cupPosition &&
+                    drop.y > (gameState.gameHeight - gameState.cupHeight - 20) &&
+                    drop.y < gameState.gameHeight
+                );
+            }
+            
+            function stopGame() {
+                gameState.gameActive = false;
+                clearInterval(gameState.gameLoop);
+                clearInterval(gameState.dropCreator);
+                clearInterval(gameState.steamCreator);
+                overlay.style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>
